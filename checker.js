@@ -12,7 +12,10 @@ class Checker {
         };
     }
 
-    check() {
+    /**
+     * Check a list of tlds for the domain.
+     */
+    checkAll() {
         console.clear();
 
         let completed = 0;
@@ -50,6 +53,26 @@ class Checker {
                 });
             } catch (err) {}
         }
+    }
+
+    /**
+     * Check if a specific domain is available.
+     * @param {string} domain The domain to check.
+     */
+    check(domain) {
+        try {
+            whois.lookup(domain, (err, data) => {
+                if (err || !data) return;
+
+                const notFound = data.startsWith('Domain not found.') || data.startsWith(`No match for domain "${domain.toUpperCase()}"`) || data.startsWith(`Domain '${domain}' not found`);
+
+                if (notFound) {
+                    console.log(`+ ${domain} is available.`);
+                } else {
+                    console.log(`- ${domain} is NOT available.`);
+                }
+            });
+        } catch (err) {}
     }
 }
 
